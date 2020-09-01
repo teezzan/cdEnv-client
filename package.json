@@ -1,0 +1,23 @@
+{
+  "name": "cdEnv",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "description": "Loads environment variables from cdEnv.com securely and allows for scalability",
+  "devDependencies": {},
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "env",
+    "environment",
+    "config",
+    "settings",
+    ".env",
+    "variables"
+  ],
+  "author": "",
+  "license": "ISC"
+}
