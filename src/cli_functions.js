@@ -38,7 +38,8 @@ exports.menu = async () => {
     if (cdenv.token !== "") {
         items = [
             'a. Environments',
-            'b. Generate Token',
+            'b. Tokens',
+            'c. Keys',
             'c. Revoke Token',
             'd. Help',
             'e. Quit'
@@ -75,6 +76,9 @@ exports.menu = async () => {
                 break
             case 0:
                 exports.env()
+                break
+            case 1:
+                exports.token()
                 break
 
             default:
@@ -169,7 +173,7 @@ exports.env = async () => {
                 exports.edit();
                 break
             case 3:
-                exports.terminate();
+                exports.menu();
                 break
             case 4:
                 exports.menu()
@@ -234,5 +238,70 @@ exports.edit = async () => {
 
 
         })
+    })
+}
+exports.token = async () => {
+    let items = [
+        'a. Create Token',
+        'b. View Tokens',
+        'c. Revoke Token',
+        'd. Menu',
+        'e. Quit',
+
+    ]
+    term.singleColumnMenu(items, function (error, response) {
+        term('\n').eraseLineAfter.green(
+            "#%s selected: %s (%s,%s)\n",
+            response.selectedIndex,
+            response.selectedText,
+            response.x,
+            response.y
+        );
+        switch (response.selectedIndex) {
+            case 0:
+                exports.createToken()
+                break;
+            case 1:
+                exports.getToken();
+                break
+            case 2:
+                exports.deleteToken();
+                break
+            case 3:
+                exports.menu();
+                break
+            case 4:
+                exports.terminate()
+                break
+
+            default:
+                break;
+        }
+
+    })
+}
+exports.createToken = async () => {
+    term('Generating Token... ');
+    let a = cdenv.createToken()
+    a.then((res) => {
+        term('\n').eraseLineAfter.green(`Token Generated Successfully\n`);
+        term('\n').eraseLineAfter.green(`Token: ${res.apiKey}\n`);
+        exports.token()
+    })
+        .catch(err => {
+            throw err
+        })
+}
+exports.getToken = async () => {
+    let a = cdenv.me();
+    a.then((user) => {
+        let x = user.tokens;
+        x.forEach(x => {
+            term('\n').eraseLineAfter.green(`${x._id}\n`);
+        });
+        exports.token()
+
+    }).catch(err => {
+        throw err
     })
 }

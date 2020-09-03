@@ -107,6 +107,24 @@ class CdEnv {
             })
         }
     }
+    createToken() {
+        return axios.get(`${server}/users/genkey`, {
+            headers: { 'authorization': `Bearer ${this.token}` }
+        }).then((resp) => {
+            return resp.data
+        }).catch(err => {
+            throw err
+        })
+    }
+    me() {
+        return axios.get(`${server}/users/me`, {
+            headers: { 'authorization': `Bearer ${this.token}` }
+        }).then((resp) => {
+            return resp.data.user
+        }).catch(err => {
+            throw err
+        })
+    }
 }
 
 module.exports = new CdEnv();
