@@ -98,7 +98,7 @@ class CdEnv {
         if (title == "" || id == "") {
             return false
         } else {
-            return axios.post(`${server}/env/updateEnv`, { env: { title, _id: id } }, {
+            return axios.put(`${server}/env/updateEnv`, { env: { title, _id: id } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 return resp.data
@@ -124,6 +124,56 @@ class CdEnv {
         }).catch(err => {
             throw err
         })
+    }
+    deleteToken(id) {
+        return axios.post(`${server}/users/delkey`, { key_id: id }, {
+            headers: { 'authorization': `Bearer ${this.token}` }
+        }
+        ).then((resp) => {
+            return resp.data.user
+        }).catch((err) => {
+            throw err
+        })
+    }
+    addKey(env_id, key_name, value) {
+        if (env_id == "" || key_name == "" || value == "") {
+            return false
+        } else {
+            return axios.post(`${server}/env/addKey`, { env: { env_id, key_name, value } }, {
+                headers: { 'authorization': `Bearer ${this.token}` }
+            }).then((resp) => {
+                // console.log(resp.data);
+                return resp.data.env
+            }).catch(err => {
+                throw err
+            })
+        }
+    }
+    editKey(env_id, key_id, key_name, value) {
+        if (env_id == "" || key_id == "" || key_name == "" || value == "") {
+            return false
+        } else {
+            return axios.put(`${server}/env/updateKey`, { env: { env_id, key_id, key_name, value } }, {
+                headers: { 'authorization': `Bearer ${this.token}` }
+            }).then((resp) => {
+                return resp.data.env
+            }).catch(err => {
+                throw err
+            })
+        }
+    }
+    deleteKey(env_id, key_id) {
+        if (env_id == "" || key_id == "") {
+            return false
+        } else {
+            return axios.post(`${server}/env/deleteKey`, { env: { env_id, key_id } }, {
+                headers: { 'authorization': `Bearer ${this.token}` }
+            }).then((resp) => {
+                return resp.data.env
+            }).catch(err => {
+                throw err
+            })
+        }
     }
 }
 
