@@ -80,6 +80,33 @@ class CdEnv {
             })
 
     }
+    create(title) {
+        if (title == "") {
+            return false
+        } else {
+            return axios.post(`${server}/env`, { env: { title } }, {
+                headers: { 'authorization': `Bearer ${this.token}` }
+            }).then((resp) => {
+                // console.log(resp.data);
+                return resp.data
+            }).catch(err => {
+                throw err
+            })
+        }
+    }
+    editenv(title, id) {
+        if (title == "" || id == "") {
+            return false
+        } else {
+            return axios.post(`${server}/env/updateEnv`, { env: { title, _id: id } }, {
+                headers: { 'authorization': `Bearer ${this.token}` }
+            }).then((resp) => {
+                return resp.data
+            }).catch(err => {
+                throw err
+            })
+        }
+    }
 }
 
 module.exports = new CdEnv();

@@ -1,5 +1,7 @@
 var term = require('terminal-kit').terminal;
 var cdenv = require('./index')
+var current_env = {}
+var current_env_id = {}
 
 exports.login = async () => {
 
@@ -72,7 +74,7 @@ exports.menu = async () => {
                 exports.terminate();
                 break
             case 0:
-                exports.getenv()
+                exports.env()
                 break
 
             default:
@@ -138,4 +140,99 @@ exports.getenv = async () => {
     })
 
 }
+exports.env = async () => {
+    let items = [
+        'a. Create Environment',
+        'b. View Environments',
+        'c. Edit Environment Name',
+        'd. Delete Environment',
+        'e. Menu',
+        'f. Quit',
 
+    ]
+    term.singleColumnMenu(items, function (error, response) {
+        term('\n').eraseLineAfter.green(
+            "#%s selected: %s (%s,%s)\n",
+            response.selectedIndex,
+            response.selectedText,
+            response.x,
+            response.y
+        );
+        switch (response.selectedIndex) {
+            case 0:
+                exports.create()
+                break;
+            case 1:
+                exports.getenv();
+                break
+            case 2:
+                exports.edit();
+                break
+            case 3:
+                exports.terminate();
+                break
+            case 4:
+                exports.menu()
+                break
+            case 5:
+                exports.terminate()
+                break
+
+            default:
+                break;
+        }
+
+    })
+}
+
+exports.create = async () => {
+    term('Please enter your environment Name: ');
+    var name = await term.inputField().promise;
+    let a = cdenv.create(name)
+
+    a.then((res) => {
+        term('\n').eraseLineAfter.green(`${name} Environment Created Successfully\n`);
+        exports.menu()
+
+    }).catch((err) => {
+        throw err
+    })
+}
+exports.edit = async () => {
+    let a = cdenv.getenv();
+    a.then((x) => {
+        let env_names = [];
+        let env_id = [];
+        x.forEach(x => {
+            env_names.push(x.title);
+            env_id.push(x._id);
+
+        });
+
+        return { items: env_names, data: env_id };
+    }).then(({ items, data }) => {
+
+        term.singleColumnMenu(items, async function (error, response) {
+            term('\n').eraseLineAfter.green(
+                "#%s selected: %s (%s,%s)\n",
+                response.selectedIndex,
+                response.selectedText,
+                response.x,
+                response.y
+            );
+            term('Please enter New Name: ');
+
+            var input = await term.inputField().promise;
+            let a = cdenv.editenv(input, data[response.selectedIndex])
+            a.then((res) => {
+                term('\n').eraseLineAfter.green(`${input} Environment Updated Successfully\n`);
+                exports.menu()
+
+            }).catch((err) => {
+                throw err
+            })
+
+
+        })
+    })
+}

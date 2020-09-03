@@ -19,6 +19,10 @@ term.on('key', (name, matches, data) => {
         term.green('CTRL-C received...\n');
         helpers.terminate();
     }
+    if (matches.indexOf('CTRL-G') >= 0) {
+        term.green('CTRL-G received... Menu\n');
+        helpers.menu();
+    }
 
 });
 
