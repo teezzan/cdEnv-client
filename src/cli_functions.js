@@ -58,7 +58,7 @@ exports.menu = async () => {
     }
 
 
-    term.singleColumnMenu(items, function (error, response) {
+    return term.singleColumnMenu(items, function (error, response) {
         term('\n').eraseLineAfter.green(
             "#%s selected: %s (%s,%s)\n",
             response.selectedIndex,
@@ -66,6 +66,7 @@ exports.menu = async () => {
             response.x,
             response.y
         );
+        let out;
         switch (response.selectedIndex) {
             case 5:
                 exports.login()
@@ -74,7 +75,7 @@ exports.menu = async () => {
                 exports.terminate();
                 break
             case 0:
-                exports.env()
+                exports.env();
                 break
             case 1:
                 exports.token()
@@ -88,6 +89,7 @@ exports.menu = async () => {
         }
 
     })
+
 }
 exports.terminate = async () => {
     term.brightBlack('About to exit...\n');
@@ -438,15 +440,9 @@ exports.addKey = async () => {
 
                 var value = await term.inputField().promise;
 
-                let a = cdenv.addKey(data[response.selectedIndex], key_name, value);
-                a.then((res) => {
-                    term('\n').eraseLineAfter.green(`${key_name} added Successfully\n`);
-                    exports.keys()
-
-                }).catch((err) => {
-                    throw err
-                })
-
+                let a = await cdenv.addKey(data[response.selectedIndex], key_name, value);
+                term('\n').eraseLineAfter.green(`${key_name} added Successfully\n`);
+                exports.menu()
 
             })
         } else {
@@ -474,60 +470,63 @@ exports.editKey = async () => {
     }).then(({ items, env_id, keys }) => {
         // console.log(items)
         if (items.length !== 0) {
-            term.singleColumnMenu(items, async function (error, response) {
-                term('\n').eraseLineAfter.green(
-                    "\n#%s selected: %s (%s,%s)\n\n",
-                    response.selectedIndex,
-                    response.selectedText,
-                    response.x,
-                    response.y
-                );
-                keys = keys[response.selectedIndex];
-                let key_names = []
-                keys.forEach(key => {
-                    key_names.push(key.key_name)
-                });
-                if (key_names.length !== 0) {
-                    term.singleColumnMenu(key_names, async function (error, res2) {
-                        term('\n').eraseLineAfter.green(
-                            "#%s selected: %s (%s,%s)\n\n",
-                            res2.selectedIndex,
-                            res2.selectedText,
-                            res2.x,
-                            res2.y
-                        );
-                        term('\nPlease enter New Key_Name (Press Return to Leave Unchanged): ');
-
-                        var key_name = await term.inputField().promise;
-                        if (key_name == "") {
-                            key_name = keys[res2.selectedIndex].key_name
-                        }
-
-                        term('\nPlease enter New Value (Press Return to Leave Unchanged): ');
-
-                        var value = await term.inputField().promise;
-                        if (value == "") {
-                            value = keys[res2.selectedIndex].value
-                        }
-
-
-                        let a = cdenv.editKey(env_id[response.selectedIndex], keys[res2.selectedIndex]._id, key_name, value);
-                        a.then((res) => {
-                            term('\n').eraseLineAfter.green(`${key_name} Updated Successfully\n`);
-                            exports.keys()
-
-                        }).catch((err) => {
-                            throw err
-                        })
-                        exports.keys();
-
-
-                    })
-                } else {
-                    term.red('Empty\n');
-                    exports.keys();
-                }
+            let ab = term.singleColumnMenu(items).promise
+            ab.then((res) => {
+                console.log(res)
+                return res
             })
+                .then((response) => {
+                    keys = keys[response.selectedIndex];
+                    let key_names = []
+                    keys.forEach(key => {
+                        key_names.push(key.key_name)
+                    });
+                    return { keys, key_names, response }
+
+                }).then(({ keys, key_names, response }) => {
+                    if (key_names.length !== 0) {
+
+                        let b = term.singleColumnMenu(key_names).promise
+                        b.then(async (res2) => {
+                            term('\n').eraseLineAfter.green(
+                                "#%s selected: %s (%s,%s)\n\n",
+                                res2.selectedIndex,
+                                res2.selectedText,
+                                res2.x,
+                                res2.y
+                            );
+                            term('\nPlease enter New Key_Name (Press Return to Leave Unchanged): ');
+
+                            var key_name = await term.inputField().promise;
+                            if (key_name == "") {
+                                key_name = keys[res2.selectedIndex].key_name
+                            }
+
+                            term('\nPlease enter New Value (Press Return to Leave Unchanged): ');
+
+                            var value = await term.inputField().promise;
+                            if (value == "") {
+                                value = keys[res2.selectedIndex].value
+                            }
+
+
+                            let a = cdenv.editKey(env_id[response.selectedIndex], keys[res2.selectedIndex]._id, key_name, value);
+                            a.then((res) => {
+                                term('\n').eraseLineAfter.green(`${key_name} Updated Successfully\n`);
+                                exports.keys()
+
+                            }).catch((err) => {
+                                throw err
+                            })
+                            // exports.keys();
+                        })
+
+                    } else {
+                        term.red('Empty\n');
+                        exports.keys();
+                    }
+                })
+
         } else {
             term.red('Empty\n');
             exports.keys();

@@ -26,4 +26,10 @@ term.on('key', (name, matches, data) => {
 
 });
 
-let a = helpers.menu()
+// let a = async () => {
+//     let b = await helpers.menu()
+//     console.log('a ', b)
+// }
+// a()
+
+helpers.menu()
