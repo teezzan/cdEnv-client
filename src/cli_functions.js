@@ -1,38 +1,9 @@
 var term = require('terminal-kit').terminal;
 var cdenv = require('./index')
-var current_env = {}
-var current_env_id = {}
-
-exports.login = async () => {
-
-
-    term('Please enter your email: ');
-
-    var input = await term.inputField().promise;
-
-    term.green("\nYour name is '%s'\n", input);
-
-    term('Please enter your password: ');
-
-    var password = await term.inputField().promise;
-
-    term.green("\nYour name is '%s'\n", password);
-    cdenv.login(input, password);
-    exports.menu();
-
-}
-
-exports.exit = async () => {
-    term.brightBlack('About to exit...\n');
-    term.grabInput(false);
-    term.applicationKeypad(false);
-
-    // Add a 100ms delay, so the terminal will be ready when the process effectively exit, preventing bad escape sequences drop
-    setTimeout(() => { process.exit(); }, 100);
-
-}
 
 exports.menu = async () => {
+
+    term.green('.\n');
     term.green('cdEnv Main Menu.\n');
     let items;
     if (cdenv.token !== "") {
@@ -68,12 +39,7 @@ exports.menu = async () => {
         );
         let out;
         switch (response.selectedIndex) {
-            case 5:
-                exports.login()
-                break;
-            case 4:
-                exports.terminate();
-                break
+
             case 0:
                 exports.env();
                 break
@@ -83,6 +49,15 @@ exports.menu = async () => {
             case 2:
                 exports.keys()
                 break
+            case 4:
+                exports.terminate();
+                break
+            case 5:
+                exports.login()
+                break;
+            case 6:
+                exports.register()
+                break;
 
             default:
                 break;
@@ -91,6 +66,68 @@ exports.menu = async () => {
     })
 
 }
+exports.register = async () => {
+
+
+    term('Please enter your email: ');
+
+    var email = await term.inputField().promise;
+
+    term.green("\nYour email is '%s'\n", email);
+
+    term('Please choice of username: ');
+
+    var username = await term.inputField().promise;
+
+    term.green("\nYour username is '%s'\n", username);
+
+    term('Please enter your password: ');
+
+    var password = await term.inputField().promise;
+
+    let a = cdenv.register(email, password, username);
+    a.then(res => {
+
+        term.green(`Check your Email (${email}) for a Confirmation Link\n`);
+    }).catch(err => {
+        term.red(`${err.message}\n`)
+    })
+    exports.menu();
+
+}
+exports.login = async () => {
+
+
+    term('Please enter your email: ');
+
+    var input = await term.inputField().promise;
+
+    term.green("\nYour name is '%s'\n", input);
+
+    term('Please enter your password: ');
+
+    var password = await term.inputField().promise;
+
+    term.green("\nYour name is '%s'\n", password);
+    cdenv.login(input, password);
+    exports.menu();
+
+}
+
+exports.exit = async () => {
+    term.brightBlack('About to exit...\n');
+    term.grabInput(false);
+    term.applicationKeypad(false);
+
+    // Add a 100ms delay, so the terminal will be ready when the process effectively exit, preventing bad escape sequences drop
+    setTimeout(() => {
+        clear();
+        process.exit();
+    }, 100);
+
+}
+
+
 exports.terminate = async () => {
     term.brightBlack('About to exit...\n');
     term.grabInput(false);
@@ -155,7 +192,8 @@ exports.createEnv = async () => {
         exports.menu()
 
     }).catch((err) => {
-        throw err
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
 exports.editEnv = async () => {
@@ -189,11 +227,14 @@ exports.editEnv = async () => {
                 var input = await term.inputField().promise;
                 let a = cdenv.editenv(input, data[response.selectedIndex])
                 a.then((res) => {
-                    term('\n').eraseLineAfter.green(`${input} Environment Updated Successfully\n`);
+                    if (res) {
+                        term('\n').eraseLineAfter.green(`${input} Environment Updated Successfully\n`);
+                    }
                     exports.menu()
 
                 }).catch((err) => {
-                    throw err
+                    console.log("Check Your Network Connection And Be Sure You are Logged in");
+                    exports.menu();
                 })
 
 
@@ -304,12 +345,16 @@ exports.createToken = async () => {
     term('Generating Token... ');
     let a = cdenv.createToken()
     a.then((res) => {
-        term('\n').eraseLineAfter.green(`Token Generated Successfully\n`);
-        term('\n').eraseLineAfter.green(`Token: ${res.apiKey}\n`);
+        if (res) {
+
+            term('\n').eraseLineAfter.green(`Token Generated Successfully\n`);
+            term('\n').eraseLineAfter.green(`Token: ${res.apiKey}\n`);
+        }
         exports.token()
     })
         .catch(err => {
-            throw err
+            console.log("Check Your Network Connection And Be Sure You are Logged in");
+            exports.menu();
         })
 }
 exports.getToken = async () => {
@@ -322,7 +367,8 @@ exports.getToken = async () => {
         exports.token()
 
     }).catch(err => {
-        throw err
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
 exports.deleteToken = async () => {
@@ -348,13 +394,17 @@ exports.deleteToken = async () => {
                         response.x,
                         response.y
                     );
+                    console.log(token_id);
                     a = cdenv.deleteToken(token_id[response.selectedIndex])
                     a.then((res) => {
-                        term('\n').eraseLineAfter.red(`Revoked Successfully\n`);
+                        if (res) {
+                            term('\n').eraseLineAfter.red(`Revoked Successfully\n`);
+                        }
                         exports.token()
 
                     }).catch(err => {
-                        throw err
+                        console.log("Check Your Network Connection And Be Sure You are Logged in");
+                        exports.menu();
                     })
                 })
             } else {
@@ -364,7 +414,8 @@ exports.deleteToken = async () => {
 
         })
         .catch(err => {
-            throw err
+            console.log("Check Your Network Connection And Be Sure You are Logged in");
+            exports.menu();
         })
 }
 exports.keys = async () => {
@@ -516,7 +567,8 @@ exports.editKey = async () => {
                                 exports.keys()
 
                             }).catch((err) => {
-                                throw err
+                                console.log("Check Your Network Connection And Be Sure You are Logged in");
+                                exports.menu();
                             })
                             // exports.keys();
                         })
@@ -576,13 +628,15 @@ exports.deleteKey = async () => {
 
                         let a = cdenv.deleteKey(env_id[response.selectedIndex], keys[res2.selectedIndex]._id);
                         a.then(async (res) => {
-                            await term('\n').eraseLineAfter.green(` Deleted Successfully\n`);
+                            if (res) {
+                                await term('\n').eraseLineAfter.green(` Deleted Successfully\n`);
+                            }
                             exports.keys()
 
                         }).catch((err) => {
-                            throw err
+                            console.log("Check Your Network Connection And Be Sure You are Logged in");
+                            exports.menu();
                         })
-                        exports.keys();
 
 
                     })

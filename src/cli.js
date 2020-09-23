@@ -10,7 +10,9 @@
  */
 
 var term = require('terminal-kit').terminal;
+// var cdenv = require('./index')
 let helpers = require('./cli_functions')
+
 
 
 term.on('key', (name, matches, data) => {
@@ -32,4 +34,15 @@ term.on('key', (name, matches, data) => {
 // }
 // a()
 
-helpers.menu()
+// console.log("token= ", helpers.ready());
+var cdenv = require('./index')
+let start = cdenv.ready();
+start.then((x) => {
+    console.log("logged in")
+}).catch((x) => {
+    console.log(x);
+    //remove .data or refresh login
+    console.log('refresing login')
+}).then(() => {
+    helpers.menu()
+})

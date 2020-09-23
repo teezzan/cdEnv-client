@@ -1,16 +1,38 @@
 let axios = require('axios');
 let fs = require('fs');
 let server = 'http://localhost:3000/api';
-let userdetails = require('../.data')
+var term = require('terminal-kit').terminal;
+
+
+let userdetails = {};
+try {
+    userdetails = require('../.data');
+} catch{
+    userdetails.token = '';
+}
 
 class CdEnv {
     token = "";
     env = {};
 
     constructor() {
-        if (userdetails.token) {
-            this.token = userdetails.token;
-        }
+        this.token = userdetails.token;
+    }
+    ready() {
+        return new Promise((resolve, reject) => {
+            if (userdetails.token) {
+                let a = this.me();
+                a.then(res => {
+                    resolve(true)
+                })
+                    .catch(err => {
+                        console.log(err);
+                        reject(err)
+                    })
+
+
+            }
+        })
     }
     fetch(api_key, env_name) {
         if (api_key == '' || env_name == '') {
@@ -35,11 +57,34 @@ class CdEnv {
                 }
 
             }).catch((err) => {
-                console.log(err)
+                console.log("Check Your Network Connection and Be sure You are Logged in.");
             })
         }
     }
+    register(email, password, username) {
+        if (email == "" || password == "" || username == "") {
+            return false
+        } else {
+            return axios.post(`${server}/users/register`, {
+                user: {
+                    password,
+                    email,
+                    username
+                }
+            }).then((resp) => {
+                let user = resp.data.user;
+                fs.writeFileSync('./.data.json', "")
+                return user
+                // console.log(userdata)
+            }).catch((err) => {
+                console.log("Check Your Network Connection and Be sure You are Logged in.");;
+                this.token = ""
+                fs.writeFileSync('./.data.json', "")
+                throw err
 
+            })
+        }
+    }
     login(email, password) {
         if (email == "" || password == "") {
             return false
@@ -60,7 +105,7 @@ class CdEnv {
                 fs.writeFileSync('./.data.json', JSON.stringify(userdata))
                 // console.log(userdata)
             }).catch((err) => {
-                console.log(err);
+                console.log("Check Your Network Connection and Be sure You are Logged in.");;
                 this.token = ""
                 throw err
 
@@ -75,7 +120,7 @@ class CdEnv {
                 this.env = resp.data.env;
                 return this.env
             }).catch(err => {
-                console.log(err)
+                console.log("Check Your Network Connection and Be sure You are Logged in.");
                 throw err
             })
 
@@ -103,7 +148,7 @@ class CdEnv {
             }).then((resp) => {
                 return resp.data
             }).catch(err => {
-                throw err
+                console.log("Check Your Network Connection");
             })
         }
     }
@@ -113,7 +158,7 @@ class CdEnv {
         }).then((resp) => {
             return resp.data
         }).catch(err => {
-            throw err
+            console.log("Check Your Network Connection and Be sure You are Logged in.");
         })
     }
     me() {
@@ -122,7 +167,15 @@ class CdEnv {
         }).then((resp) => {
             return resp.data.user
         }).catch(err => {
-            throw err
+            // 
+
+            console.log(err.code);
+            if (err.code == 'ECONNREFUSED') {
+                console.log("Check Your Network Connection");
+            }
+            else if (err.response.status == 401) {
+                console.log("Please Login ");
+            }
         })
     }
     deleteToken(id) {
