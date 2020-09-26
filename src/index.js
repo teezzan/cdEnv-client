@@ -40,7 +40,7 @@ class CdEnv {
     fetch(api_key, env_name) {
         if (api_key == '' || env_name == '') {
             console.log('error')
-            return "error"
+            throw new Error("Invalid Parameters");
         } else {
 
             let out = false;
