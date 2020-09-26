@@ -9,10 +9,9 @@
  * edit Env Key and Value
  */
 
-var term = require('terminal-kit').terminal;
-// var cdenv = require('./index')
+let term = require('terminal-kit').terminal;
 let helpers = require('./cli_functions')
-
+let cdenv = require('./index')
 
 
 term.on('key', (name, matches, data) => {
@@ -28,21 +27,23 @@ term.on('key', (name, matches, data) => {
 
 });
 
-// let a = async () => {
-//     let b = await helpers.menu()
-//     console.log('a ', b)
-// }
-// a()
 
-// console.log("token= ", helpers.ready());
-var cdenv = require('./index')
 let start = cdenv.ready();
 start.then((x) => {
-    console.log("logged in")
+    // console.log("X =>", x);
+    if (x == "ECONNREFUSED") {
+        return false
+    }
+    else {
+        return true
+    }
+    // console.log("Logged in ... ")
 }).catch((x) => {
-    console.log(x);
+    console.log("X11 =>", x);
     //remove .data or refresh login
-    console.log('refresing login')
-}).then(() => {
-    helpers.menu()
+    // console.log('refreshing login with refresh token')
+}).then((x) => {
+    if (x) {
+        helpers.menu()
+    }
 })

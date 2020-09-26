@@ -23,10 +23,11 @@ class CdEnv {
             if (userdetails.token) {
                 let a = this.me();
                 a.then(res => {
-                    resolve(true)
+                    // console.log("res ==> ", res)
+                    resolve(res)
                 })
                     .catch(err => {
-                        console.log(err);
+                        // console.log("err= ", err);
                         reject(err)
                     })
 
@@ -174,6 +175,7 @@ class CdEnv {
             console.log(err.code);
             if (err.code == 'ECONNREFUSED') {
                 console.log("Check Your Network Connection");
+                return err.code;
             }
             else if (err.response.status == 401) {
                 console.log("Please Login ");

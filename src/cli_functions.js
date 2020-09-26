@@ -243,13 +243,14 @@ exports.editEnv = async () => {
             term.red('Empty\n');
             exports.env();
         }
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
 exports.getEnv = async () => {
     let a = cdenv.getenv();
     a.then((x) => {
-        // console.log('yaya = ', x);
-        //render table here
         let env_names = [];
         let bigtemprow = []
         x.forEach(x => {
@@ -262,8 +263,6 @@ exports.getEnv = async () => {
             bigtemprow.push(temprow);
 
         });
-        // console.log(env_names);
-        // console.log(bigtemprow);
 
         return { items: env_names, data: bigtemprow };
     }).then(({ items, data }) => {
@@ -296,6 +295,9 @@ exports.getEnv = async () => {
             term.red('Empty\n');
             exports.env();
         }
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 
 }
@@ -501,6 +503,9 @@ exports.addKey = async () => {
             exports.keys();
         }
 
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
 exports.editKey = async () => {
@@ -583,6 +588,9 @@ exports.editKey = async () => {
             term.red('Empty\n');
             exports.keys();
         }
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
 exports.deleteKey = async () => {
@@ -654,5 +662,8 @@ exports.deleteKey = async () => {
             exports.keys();
         }
 
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
     })
 }
