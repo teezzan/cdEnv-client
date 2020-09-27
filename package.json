@@ -1,12 +1,11 @@
 {
-  "name": "cdEnv",
+  "name": "cdenv",
   "version": "1.0.0",
   "main": "./src/index.js",
-  "description": "Loads environment variables from cdEnv.com securely and allows for scalability",
+  "description": "Loads environment variables from cdEnv.tech securely and allows for scalability",
   "devDependencies": {},
   "dependencies": {
     "axios": "^0.19.2",
-    "clear": "^0.1.0",
     "terminal-kit": "^1.43.0"
   },
   "scripts": {
@@ -20,6 +19,14 @@
     ".env",
     "variables"
   ],
-  "author": "",
-  "license": "ISC"
+  "author": "Taiwo Yusuf Hassan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teezzan/cdEnv-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/teezzan/cdEnv-client/issues"
+  },
+  "homepage": "https://github.com/teezzan/cdEnv-client#readme"
 }

@@ -16,7 +16,7 @@ Using the library is very simple and straightforward. You will need to sign up, 
 After generating your API Key, creating your environment and populating the environment, you can use the following snippet of code to import the environment variable into your test or deployment server at will.
 
 ```javascript
-let cdenv = require('cdenv');
+let cdenv = require('@teehazzan/cdenv');
 cdenv.fetch('MJ9SQ6D-WS6MMQ5-NJGPABC-BS832KT','TEST_APP_ENV');
 ```
 This will populate your environment with the variables.
