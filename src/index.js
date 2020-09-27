@@ -1,6 +1,6 @@
 let axios = require('axios');
 let fs = require('fs');
-let server = 'http://localhost:3000/api';
+let server = 'http://cdenv.herokuapp.com/api';
 var term = require('terminal-kit').terminal;
 
 
@@ -33,7 +33,8 @@ class CdEnv {
 
 
             } else {
-                reject(false)
+                //ping network
+                resolve(false)
             }
         })
     }
@@ -76,9 +77,7 @@ class CdEnv {
                 }
             }).then((resp) => {
                 let user = resp.data.user;
-                fs.writeFileSync('./.data.json', "")
                 return user
-                // console.log(userdata)
             }).catch((err) => {
                 console.log("Check Your Network Connection and Be sure You are Logged in.");;
                 this.token = ""
@@ -92,10 +91,10 @@ class CdEnv {
         if (email == "" || password == "") {
             return false
         } else {
-            axios.post(`${server}/users/login`, {
+            return axios.post(`${server}/users/login`, {
                 user: {
-                    password: "password",
-                    email: "email@gmail.com"
+                    password,
+                    email
                 }
             }).then((resp) => {
                 let user = resp.data.user;
@@ -108,10 +107,9 @@ class CdEnv {
                 fs.writeFileSync('./.data.json', JSON.stringify(userdata))
                 // console.log(userdata)
             }).catch((err) => {
-                console.log("Check Your Network Connection and Be sure You are Logged in.");;
+                console.log("Check Your Network Connection and Be sure of your credentials.");;
                 this.token = ""
-                throw err
-
+                return null
             })
         }
     }
@@ -168,6 +166,7 @@ class CdEnv {
         return axios.get(`${server}/users/me`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         }).then((resp) => {
+            // console.log(resp);
             return resp.data.user
         }).catch(err => {
             // 

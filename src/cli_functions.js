@@ -109,8 +109,11 @@ exports.login = async () => {
     var password = await term.inputField().promise;
 
     term.green("\nYour name is '%s'\n", password);
-    cdenv.login(input, password);
-    exports.menu();
+    let a = cdenv.login(input, password)
+    a.then((x) => {
+        console.log(x);
+        exports.menu();
+    })
 
 }
 

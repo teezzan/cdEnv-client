@@ -39,7 +39,8 @@ start.then((x) => {
     }
     // console.log("Logged in ... ")
 }).catch((x) => {
-    console.log("X11 =>", x);
+    // console.log("X111 =>", x);
+    return x
     //remove .data or refresh login
     // console.log('refreshing login with refresh token')
 }).then((x) => {
