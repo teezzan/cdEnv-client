@@ -20,6 +20,22 @@ let cdenv = require('@teehazzan/cdenv');
 cdenv.fetch('MJ9SQ6D-WS6MMQ5-NJGPABC-BS832KT','TEST_APP_ENV');
 ```
 This will populate your environment with the variables.
+
+## Starting CLI Console
+cdEnv comes packeaged with a cli application to help ease setting up of environments. You can 
+- Signup as a User
+- Login as a User
+- Create environments and populate it with Keys and values
+- View environmental Keys and Variables.
+- Modify and delete environments.
+- Generate and Revoke access tokens.
+- and many more.
+Simply run the cli with its command. 
+
+```bash
+cdenv
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

@@ -1,7 +1,10 @@
 {
   "name": "cdenv",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./src/index.js",
+  "bin": {
+    "cdenv": "./bin/index.js"
+  },
   "description": "Loads environment variables from cdEnv.tech securely and allows for scalability",
   "devDependencies": {},
   "dependencies": {

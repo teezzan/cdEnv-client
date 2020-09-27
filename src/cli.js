@@ -48,3 +48,4 @@ start.then((x) => {
         helpers.menu()
     }
 })
+module.exports = start;
