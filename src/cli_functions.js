@@ -30,13 +30,7 @@ exports.menu = async () => {
 
 
     return term.singleColumnMenu(items, function (error, response) {
-        term('\n').eraseLineAfter.green(
-            "#%s selected: %s (%s,%s)\n",
-            response.selectedIndex,
-            response.selectedText,
-            response.x,
-            response.y
-        );
+        term('\n').eraseLineAfter.green();
         let out;
         switch (response.selectedIndex) {
 
@@ -106,12 +100,12 @@ exports.login = async () => {
 
     term('Please enter your password: ');
 
-    var password = await term.inputField().promise;
+    var password = await term.inputField({ echo: false }).promise;
+    term.green("\nLogging in as '%s'\n", input);
 
-    term.green("\nYour name is '%s'\n", password);
     let a = cdenv.login(input, password)
     a.then((x) => {
-        console.log(x);
+        // console.log(x);
         exports.menu();
     })
 
@@ -144,21 +138,16 @@ exports.env = async () => {
 
     let items = [
         'a. Create Environment',
-        'b. View Environments',
-        'c. Edit Environment Name',
-        'd. Delete Environment',
-        'e. Menu',
-        'f. Quit',
+        'b. View Environments (Encrypted)',
+        'c. View Environments (Plain Text)',
+        'd. Edit Environment Name',
+        'e. Delete Environment',
+        'f. Menu',
+        'g. Quit',
 
     ]
     term.singleColumnMenu(items, function (error, response) {
-        term('\n').eraseLineAfter.green(
-            "#%s selected: %s (%s,%s)\n",
-            response.selectedIndex,
-            response.selectedText,
-            response.x,
-            response.y
-        );
+        term('\n').eraseLineAfter.green();
         switch (response.selectedIndex) {
             case 0:
                 exports.createEnv()
@@ -167,15 +156,18 @@ exports.env = async () => {
                 exports.getEnv();
                 break
             case 2:
-                exports.editEnv();
+                exports.getEnvDecrypt();
                 break
             case 3:
-                exports.menu();
+                exports.editEnv();
                 break
             case 4:
-                exports.menu()
+                exports.menu();
                 break
             case 5:
+                exports.menu()
+                break
+            case 6:
                 exports.terminate()
                 break
 
@@ -204,27 +196,18 @@ exports.editEnv = async () => {
     a.then((x) => {
         let env_names = [];
         let env_id = [];
-        console.log("here1")
         x.forEach(x => {
             env_names.push(x.title);
             env_id.push(x._id);
 
         });
-        console.log("here2")
 
         return { items: env_names, data: env_id };
     }).then(({ items, data }) => {
-        console.log("here3")
 
         if (items.length !== 0) {
             term.singleColumnMenu(items, async function (error, response) {
-                term('\n').eraseLineAfter.green(
-                    "#%s selected: %s (%s,%s)\n",
-                    response.selectedIndex,
-                    response.selectedText,
-                    response.x,
-                    response.y
-                );
+                term('\n').eraseLineAfter.green();
                 term('Please enter New Name: ');
 
                 var input = await term.inputField().promise;
@@ -252,7 +235,55 @@ exports.editEnv = async () => {
     })
 }
 exports.getEnv = async () => {
-    let a = cdenv.getenv();
+
+    cdenv.getenv().then((x) => {
+        let env_names = [];
+        let bigtemprow = []
+        x.forEach(x => {
+            env_names.push(x.title);
+            let keys = x.keys;
+            let temprow = []
+            keys.forEach(key => {
+                temprow.push([key.key_name, key.value])
+            });
+            bigtemprow.push(temprow);
+
+        });
+
+        return { items: env_names, data: bigtemprow };
+    }).then(({ items, data }) => {
+        if (items.length !== 0) {
+            term.singleColumnMenu(items, function (error, response) {
+                term('\n').eraseLineAfter.green();
+                //render table return to main menu
+                term.table([["key name", "value"], ...data[response.selectedIndex]
+                ], {
+                    hasBorder: true,
+                    contentHasMarkup: true,
+                    borderChars: 'lightRounded',
+                    borderAttr: { color: 'blue' },
+                    textAttr: { bgColor: 'default' },
+                    width: 60,
+                    fit: true   // Activate all expand/shrink + wordWrap
+                }
+                );
+                exports.menu()
+
+            })
+        }
+        else {
+            term.red('Empty\n');
+            exports.env();
+        }
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        console.log(err);
+        exports.menu();
+    })
+
+}
+exports.getEnvDecrypt = async () => {
+    let a = cdenv.getenvDecrypt();
     a.then((x) => {
         let env_names = [];
         let bigtemprow = []
@@ -271,13 +302,7 @@ exports.getEnv = async () => {
     }).then(({ items, data }) => {
         if (items.length !== 0) {
             term.singleColumnMenu(items, function (error, response) {
-                term('\n').eraseLineAfter.green(
-                    "#%s selected: %s (%s,%s)\n",
-                    response.selectedIndex,
-                    response.selectedText,
-                    response.x,
-                    response.y
-                );
+                term('\n').eraseLineAfter.green();
                 //render table return to main menu
                 term.table([["key name", "value"], ...data[response.selectedIndex]
                 ], {
@@ -316,13 +341,7 @@ exports.token = async () => {
 
     ]
     term.singleColumnMenu(items, function (error, response) {
-        term('\n').eraseLineAfter.green(
-            "#%s selected: %s (%s,%s)\n",
-            response.selectedIndex,
-            response.selectedText,
-            response.x,
-            response.y
-        );
+        term('\n').eraseLineAfter.green();
         switch (response.selectedIndex) {
             case 0:
                 exports.createToken()
@@ -392,13 +411,7 @@ exports.deleteToken = async () => {
         .then(({ token, token_id }) => {
             if (token.length !== 0) {
                 term.singleColumnMenu(token, function (error, response) {
-                    term('\n').eraseLineAfter.green(
-                        "#%s selected: %s (%s,%s)\n",
-                        response.selectedIndex,
-                        response.selectedText,
-                        response.x,
-                        response.y
-                    );
+                    term('\n').eraseLineAfter.green();
                     console.log(token_id);
                     a = cdenv.deleteToken(token_id[response.selectedIndex])
                     a.then((res) => {
@@ -435,13 +448,7 @@ exports.keys = async () => {
 
     ]
     term.singleColumnMenu(items, function (error, response) {
-        term('\n').eraseLineAfter.green(
-            "#%s selected: %s (%s,%s)\n",
-            response.selectedIndex,
-            response.selectedText,
-            response.x,
-            response.y
-        );
+        term('\n').eraseLineAfter.green();
         switch (response.selectedIndex) {
             case 0:
                 exports.addKey()
@@ -481,13 +488,7 @@ exports.addKey = async () => {
     }).then(({ items, data }) => {
         if (items.length !== 0) {
             term.singleColumnMenu(items, async function (error, response) {
-                term('\n').eraseLineAfter.green(
-                    "#%s selected: %s (%s,%s)\n",
-                    response.selectedIndex,
-                    response.selectedText,
-                    response.x,
-                    response.y
-                );
+                term('\n').eraseLineAfter.green();
                 term('\nPlease enter Key_Name: ');
 
                 var key_name = await term.inputField().promise;
@@ -512,7 +513,6 @@ exports.addKey = async () => {
     })
 }
 exports.editKey = async () => {
-    //list environments
     let a = cdenv.getenv();
     a.then((x) => {
         let env_names = [];
@@ -527,7 +527,6 @@ exports.editKey = async () => {
 
         return { items: env_names, env_id: env_id, keys };
     }).then(({ items, env_id, keys }) => {
-        // console.log(items)
         if (items.length !== 0) {
             let ab = term.singleColumnMenu(items).promise
             ab.then((res) => {
@@ -578,7 +577,6 @@ exports.editKey = async () => {
                                 console.log("Check Your Network Connection And Be Sure You are Logged in");
                                 exports.menu();
                             })
-                            // exports.keys();
                         })
 
                     } else {
@@ -597,7 +595,6 @@ exports.editKey = async () => {
     })
 }
 exports.deleteKey = async () => {
-    //list environments
     let a = cdenv.getenv();
     a.then((x) => {
         let env_names = [];
@@ -614,13 +611,7 @@ exports.deleteKey = async () => {
     }).then(({ items, env_id, keys }) => {
         if (items.length !== 0) {
             term.singleColumnMenu(items, async function (error, response) {
-                term('\n\n\n').eraseLineAfter.green(
-                    "#%s selected: %s (%s,%s)\n",
-                    response.selectedIndex,
-                    response.selectedText,
-                    response.x,
-                    response.y
-                );
+                term('\n\n\n').eraseLineAfter.green();
                 keys = keys[response.selectedIndex];
                 let key_names = []
                 keys.forEach(key => {

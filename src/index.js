@@ -23,17 +23,14 @@ class CdEnv {
             if (userdetails.token) {
                 let a = this.me();
                 a.then(res => {
-                    // console.log("res ==> ", res)
                     resolve(res)
                 })
                     .catch(err => {
-                        // console.log("err= ", err);
                         reject(err)
                     })
 
 
             } else {
-                //ping network
                 resolve(false)
             }
         })
@@ -118,7 +115,20 @@ class CdEnv {
             headers: { 'authorization': `Bearer ${this.token}` }
         })
             .then((resp) => {
-                this.env = resp.data.env;
+                this.env = resp.data.envs;
+                return this.env;
+            }).catch(err => {
+                console.log("Check Your Network Connection and Be sure You are Logged in.");
+                throw err
+            })
+
+    }
+    getenvDecrypt() {
+        return axios.get(`${server}/env/userenvs?decrypt=true`, {
+            headers: { 'authorization': `Bearer ${this.token}` }
+        })
+            .then((resp) => {
+                this.env = resp.data.envs;
                 return this.env
             }).catch(err => {
                 console.log("Check Your Network Connection and Be sure You are Logged in.");
@@ -166,11 +176,8 @@ class CdEnv {
         return axios.get(`${server}/users/me`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         }).then((resp) => {
-            // console.log(resp);
             return resp.data.user
         }).catch(err => {
-            // 
-
             console.log(err.code);
             if (err.code == 'ECONNREFUSED') {
                 console.log("Check Your Network Connection");
@@ -198,7 +205,6 @@ class CdEnv {
             return axios.post(`${server}/env/addKey`, { env: { env_id, key_name, value } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
-                // console.log(resp.data);
                 return resp.data.env
             }).catch(err => {
                 throw err

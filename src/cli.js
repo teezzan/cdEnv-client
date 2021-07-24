@@ -30,19 +30,14 @@ term.on('key', (name, matches, data) => {
 
 let start = cdenv.ready();
 start.then((x) => {
-    // console.log("X =>", x);
     if (x == "ECONNREFUSED") {
         return false
     }
     else {
         return true
     }
-    // console.log("Logged in ... ")
 }).catch((x) => {
-    // console.log("X111 =>", x);
     return x
-    //remove .data or refresh login
-    // console.log('refreshing login with refresh token')
 }).then((x) => {
     if (x) {
         helpers.menu()
