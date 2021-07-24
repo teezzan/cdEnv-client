@@ -1,11 +1,11 @@
 {
   "name": "cdenv",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./src/index.js",
   "bin": {
     "cdenv": "./bin/index.js"
   },
-  "description": "Loads environment variables from cdEnv.tech securely and allows for scalability",
+  "description": "Loads environment variables from cdEnv.herokuapp.com securely.",
   "devDependencies": {},
   "dependencies": {
     "axios": "^0.19.2",

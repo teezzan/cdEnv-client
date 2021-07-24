@@ -1,6 +1,6 @@
 # cdEnv
 
-cdEnv is a NodeJS client library for communicating with cdenv.tech. CdEnv is an environment management system hosted on the cloud used for seemless delivery of personalized environment across all production or test servers.
+cdEnv is a NodeJS client library for communicating with cdenv.herokuapp.com. CdEnv is an environment management system hosted on the cloud used for seemless delivery of personalized environment across all production or test servers.
 
 
 ![Image](./cdenv.png)
