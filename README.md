@@ -3,9 +3,6 @@
 cdEnv is a NodeJS client library for communicating with cdenv.herokuapp.com. CdEnv is an environment management system hosted on the cloud used for seemless delivery of personalized environment across all production or test servers.
 
 
-![Image](./cdenv.png)
-
-
 ## Installation
 
 Use the package manager [npm](https://www.npmjs.com/get-npm) to install cdEnv.
