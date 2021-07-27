@@ -5,7 +5,7 @@
   "bin": {
     "cdenv": "./bin/index.js"
   },
-  "description": "Loads environment variables from cdEnv.herokuapp.com securely.",
+  "description": "cdenv is a self-hostable and secured system for storing keys and variables for different environments and projects",
   "devDependencies": {},
   "dependencies": {
     "axios": "^0.19.2",
