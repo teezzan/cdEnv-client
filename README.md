@@ -1,29 +1,45 @@
 # cdEnv
 
-cdEnv is a NodeJS client library for communicating with cdenv.herokuapp.com. CdEnv is an environment management system hosted on the cloud used for seemless delivery of personalized environment across all production or test servers.
+[cdEnv](https://github.com/teezzan/cdEnv) is a self-hostable and secured system for storing keys and variables for different environments and projects. It allows easy access via HTTP API and CLI.
 
+This is a **client** to access any hosted [cdEnv](https://github.com/teezzan/cdEnv) instance in your code and via the CLI.
+
+
+
+## Built With
+
+- [Nodejs](https://nodejs.org/en/)
+
+
+## Example Code
+
+The variables in an environment can be accessed as a `key:value` pair via an HTTP API request to the hosted app.This library was developed to do this and many more. It is as simple as 
+
+```javascript
+let cdenv = require('@teehazzan/cdenv');
+cdenv.fetch('API-TOKEN-GENERATED-FROM-SERVER','APP-ENVIRONMENT-NAME');
+
+```
+This will populate your environment with the variables.
+
+## Quick Installation
+Using npx, running the following will get ypu started quickly.
+```bash
+npx cdenv
+```
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com/get-npm) to install cdEnv.
+Use the package manager [npm](https://www.npmjs.com/get-npm) to install this cdEnv client.
 
 ```bash
 npm install --save cdenv
 ```
+ or run `npm install -g cdenv` to install system-wide.
 
-## Usage
-Using the library is very simple and straightforward. You will need to sign up, verify your email and generate a personalized token for your application. This can be done via the in-built cli interface of cdEnv. This is described later in the document. 
-
-After generating your API Key, creating your environment and populating the environment, you can use the following snippet of code to import the environment variable into your test or deployment server at will.
-
-```javascript
-let cdenv = require('@teehazzan/cdenv');
-cdenv.fetch('MJ9SQ6D-WS6MMQ5-NJGPABC-BS832KT','TEST_APP_ENV', 'http://cdenvv.herokuapp.com');
-```
-This will populate your environment with the variables.
 
 ## Starting CLI Console
-cdEnv comes packeaged with a cli application to help ease setting up of environments. You can 
+cdEnv comes packaged with a cli interface to help ease setting up of environments. You can 
 - Signup as a User
 - Login as a User
 - Create environments and populate it with Keys and values
