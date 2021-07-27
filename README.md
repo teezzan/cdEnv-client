@@ -18,7 +18,7 @@ After generating your API Key, creating your environment and populating the envi
 
 ```javascript
 let cdenv = require('@teehazzan/cdenv');
-cdenv.fetch('MJ9SQ6D-WS6MMQ5-NJGPABC-BS832KT','TEST_APP_ENV');
+cdenv.fetch('MJ9SQ6D-WS6MMQ5-NJGPABC-BS832KT','TEST_APP_ENV', 'http://cdenvv.herokuapp.com');
 ```
 This will populate your environment with the variables.
 
