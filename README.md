@@ -15,7 +15,7 @@
 The variables in an environment can be accessed as a `key:value` pair via an HTTP API request to the hosted app. This library was developed to do this and many more. It is as simple as 
 
 ```javascript
-let cdenv = require('@teehazzan/cdenv');
+let cdenv = require('cdenv');
 cdenv.fetch('API-TOKEN-GENERATED-FROM-SERVER','APP-ENVIRONMENT-NAME', "URL_TO_SERVER_INSTANCE");
 
 ```
@@ -56,6 +56,9 @@ This library comes packaged with a cli interface to help ease setting up of envi
 - Modify and delete environments.
 - Generate and Revoke access tokens.
 - and many more.
+
+**You need to add the URL to your [cdEnv](https://github.com/teezzan/cdEnv) to path as `CDENV_SERVER`.**
+
 Simply run the cli with its command. 
 
 ```bash
