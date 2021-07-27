@@ -19,6 +19,16 @@ let cdenv = require('@teehazzan/cdenv');
 cdenv.fetch('API-TOKEN-GENERATED-FROM-SERVER','APP-ENVIRONMENT-NAME', "URL_TO_SERVER_INSTANCE");
 
 ```
+where `API-TOKEN-GENERATED-FROM-SERVER` is your user generated secret token, `APP-ENVIRONMENT-NAME` is the name of your environment on the server and `URL_TO_SERVER_INSTANCE` is the url to access your server instance running [cdEnv](https://github.com/teezzan/cdEnv).
+
+
+You could also add the URL to your [cdEnv](https://github.com/teezzan/cdEnv) to path as `CDENV_SERVER`and the code becomes
+
+```javascript
+let cdenv = require('@teehazzan/cdenv');
+cdenv.fetch('S2W42GJ-VM041FV-H00RZT5-6PG63F5','Heroku_Env');
+
+```
 This will populate your environment with the variables.
 
 ## Quick Installation
