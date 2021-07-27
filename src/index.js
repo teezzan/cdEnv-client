@@ -39,32 +39,45 @@ class CdEnv {
             }
         })
     }
-    fetch(api_key, env_name) {
-        if (api_key == '' || env_name == '') {
+    fetch(api_key, env_name, server = null) {
+        let out_server;
+        if (server !== null) {
+            out_server = server;
+        }
+        else {
+            out_server = this.server;
+        }
+        if (api_key == '' || api_key == undefined || api_key == null) {
             console.log('error')
             throw new Error("Invalid Parameters");
-        } else {
-
-            let out = false;
-            axios.post(`${this.server}/env/env`, {
-                env_name: env_name,
-                api_key
-            }
-            ).then((resp) => {
-                try {
-                    let keys = resp.data.env.keys;
-                    keys.forEach(x => {
-                        process.env[x.key_name] = x.value
-                    });
-                    return keys
-                } catch {
-                    return { error: "Check Internet Connection" }
-                }
-
-            }).catch((err) => {
-                console.log("Check Your Network Connection and Be sure You are Logged in.");
-            })
         }
+        if (env_name == '' || env_name == undefined || env_name == null) {
+            console.log('error')
+            throw new Error("Invalid Parameters");
+        }
+        if (out_server == '' || out_server == undefined || out_server == null) {
+            console.log('error')
+            throw new Error("Invalid Parameters");
+        }
+        axios.post(`${this.server}/env/env`, {
+            env_name: env_name,
+            api_key
+        }
+        ).then((resp) => {
+            try {
+                let keys = resp.data.env.keys;
+                keys.forEach(x => {
+                    process.env[x.key_name] = x.value
+                });
+                return keys
+            } catch {
+                return { error: "Check Internet Connection" }
+            }
+
+        }).catch((err) => {
+            console.log("Check Your Network Connection and Be sure You are Logged in.");
+        })
+
     }
     register(email, password, username) {
         if (email == "" || password == "" || username == "") {
@@ -116,7 +129,7 @@ class CdEnv {
     }
     logout() {
         fs.writeFileSync('./.data.json', "");
-        this.token ="";
+        this.token = "";
         return Promise.resolve(true);
     }
     getenv() {
