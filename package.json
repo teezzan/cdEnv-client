@@ -1,6 +1,6 @@
 {
   "name": "cdenv",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "./src/index.js",
   "bin": {
     "cdenv": "./bin/index.js"
