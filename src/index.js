@@ -114,6 +114,11 @@ class CdEnv {
             })
         }
     }
+    logout() {
+        fs.writeFileSync('./.data.json', "");
+        this.token ="";
+        return Promise.resolve(true);
+    }
     getenv() {
         return axios.get(`${this.server}/env/userenvs`, {
             headers: { 'authorization': `Bearer ${this.token}` }

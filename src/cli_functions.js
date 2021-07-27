@@ -12,7 +12,8 @@ exports.menu = async () => {
             'b. Tokens',
             'c. Keys',
             'd. Help',
-            'e. Quit'
+            'e. Quit',
+            'f. Logout',
 
         ]
     } else {
@@ -47,7 +48,11 @@ exports.menu = async () => {
                 exports.terminate();
                 break
             case 5:
-                exports.login()
+                if (cdenv.token !== "") {
+                    exports.logout()
+                } else {
+                    exports.login()
+                }
                 break;
             case 6:
                 exports.register()
@@ -110,6 +115,16 @@ exports.login = async () => {
     let a = cdenv.login(input, password)
     a.then((x) => {
         // console.log(x);
+        exports.menu();
+    })
+
+}
+exports.logout = async () => {
+
+    term.green("\nLogging out");
+
+    let a = cdenv.logout()
+    a.then((x) => {
         exports.menu();
     })
 
@@ -260,7 +275,7 @@ exports.deleteEnv = async () => {
                 var input = await term.inputField().promise;
                 if (input == 'Yes') {
 
-                    let a = cdenv.deleteEnv( data[response.selectedIndex])
+                    let a = cdenv.deleteEnv(data[response.selectedIndex])
                     a.then((res) => {
                         if (res) {
                             term('\n').eraseLineAfter.green(`Environment Deleted Successfully\n`);
