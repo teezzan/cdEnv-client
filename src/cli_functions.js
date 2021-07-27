@@ -77,12 +77,16 @@ exports.register = async () => {
 
     term('Please enter your password: ');
 
-    var password = await term.inputField().promise;
+    var password = await term.inputField({ echo: false }).promise;
 
     let a = cdenv.register(email, password, username);
     a.then(res => {
-
-        term.green(`Check your Email (${email}) for a Confirmation Link\n`);
+        if (res._id) {
+            term.green(`Login with your Credentials.\n`);
+        }
+        else {
+            term.green(`Check your Email (${email}) for a Confirmation Link\n`);
+        }
     }).catch(err => {
         term.red(`${err.message}\n`)
     })
@@ -162,7 +166,7 @@ exports.env = async () => {
                 exports.editEnv();
                 break
             case 4:
-                exports.menu();
+                exports.deleteEnv();
                 break
             case 5:
                 exports.menu()
@@ -222,6 +226,56 @@ exports.editEnv = async () => {
                     console.log("Check Your Network Connection And Be Sure You are Logged in");
                     exports.menu();
                 })
+
+
+            })
+        } else {
+            term.red('Empty\n');
+            exports.env();
+        }
+    }).catch(err => {
+        console.log("Check Your Network Connection And Be Sure You are Logged in");
+        exports.menu();
+    })
+}
+exports.deleteEnv = async () => {
+    let a = cdenv.getenv();
+    a.then((x) => {
+        let env_names = [];
+        let env_id = [];
+        x.forEach(x => {
+            env_names.push(x.title);
+            env_id.push(x._id);
+
+        });
+
+        return { items: env_names, data: env_id };
+    }).then(({ items, data }) => {
+
+        if (items.length !== 0) {
+            term.singleColumnMenu(items, async function (error, response) {
+                term('\n').eraseLineAfter.green();
+                term('Are you sure? Enter "Yes" to proceed: ');
+
+                var input = await term.inputField().promise;
+                if (input == 'Yes') {
+
+                    let a = cdenv.deleteEnv( data[response.selectedIndex])
+                    a.then((res) => {
+                        if (res) {
+                            term('\n').eraseLineAfter.green(`Environment Deleted Successfully\n`);
+                        }
+                        exports.menu()
+
+                    }).catch((err) => {
+                        console.log("Check Your Network Connection And Be Sure You are Logged in");
+                        exports.menu();
+                    })
+                }
+                else {
+                    console.log("Wrong User Input");
+                    exports.menu();
+                }
 
 
             })

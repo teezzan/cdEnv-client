@@ -12,12 +12,15 @@ try {
 class CdEnv {
     token = "";
     env = {};
-    server = process.env.CDENV_SERVER + "/api";
+    server = "";
     constructor(server) {
         this.token = userdetails.token;
         if (server) {
-            this.server = server+ "/api";
+            this.server = server + "/api";
+        } else {
+            this.server = process.env.CDENV_SERVER + "/api";
         }
+        console.log("SERVER URL = " + this.server);
     }
     ready() {
         return new Promise((resolve, reject) => {
@@ -43,7 +46,7 @@ class CdEnv {
         } else {
 
             let out = false;
-            axios.post(`${server}/env/env`, {
+            axios.post(`${this.server}/env/env`, {
                 env_name: env_name,
                 api_key
             }
@@ -67,7 +70,7 @@ class CdEnv {
         if (email == "" || password == "" || username == "") {
             return false
         } else {
-            return axios.post(`${server}/users/register`, {
+            return axios.post(`${this.server}/users/register`, {
                 user: {
                     password,
                     email,
@@ -77,7 +80,7 @@ class CdEnv {
                 let user = resp.data.user;
                 return user
             }).catch((err) => {
-                console.log("Check Your Network Connection and Be sure You are Logged in.");;
+                console.log("Error. Something went wrong.");;
                 this.token = ""
                 fs.writeFileSync('./.data.json', "")
                 throw err
@@ -89,7 +92,7 @@ class CdEnv {
         if (email == "" || password == "") {
             return false
         } else {
-            return axios.post(`${server}/users/login`, {
+            return axios.post(`${this.server}/users/login`, {
                 user: {
                     password,
                     email
@@ -112,7 +115,7 @@ class CdEnv {
         }
     }
     getenv() {
-        return axios.get(`${server}/env/userenvs`, {
+        return axios.get(`${this.server}/env/userenvs`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         })
             .then((resp) => {
@@ -124,8 +127,20 @@ class CdEnv {
             })
 
     }
+    deleteEnv(id) {
+        return axios.delete(`${this.server}/env/${id}`, {
+            headers: { 'authorization': `Bearer ${this.token}` }
+        })
+            .then((resp) => {
+                return true
+            }).catch(err => {
+                console.log("Check Your Network Connection and Be sure You are Logged in.");
+                throw err
+            })
+
+    }
     getenvDecrypt() {
-        return axios.get(`${server}/env/userenvs?decrypt=true`, {
+        return axios.get(`${this.server}/env/userenvs?decrypt=true`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         })
             .then((resp) => {
@@ -141,7 +156,7 @@ class CdEnv {
         if (title == "") {
             return false
         } else {
-            return axios.post(`${server}/env`, { env: { title } }, {
+            return axios.post(`${this.server}/env`, { env: { title } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 // console.log(resp.data);
@@ -155,7 +170,7 @@ class CdEnv {
         if (title == "" || id == "") {
             return false
         } else {
-            return axios.put(`${server}/env/updateEnv`, { env: { title, _id: id } }, {
+            return axios.put(`${this.server}/env/updateEnv`, { env: { title, _id: id } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 return resp.data
@@ -165,7 +180,7 @@ class CdEnv {
         }
     }
     createToken() {
-        return axios.get(`${server}/users/genkey`, {
+        return axios.get(`${this.server}/users/genkey`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         }).then((resp) => {
             return resp.data
@@ -174,7 +189,7 @@ class CdEnv {
         })
     }
     me() {
-        return axios.get(`${server}/users/me`, {
+        return axios.get(`${this.server}/users/me`, {
             headers: { 'authorization': `Bearer ${this.token}` }
         }).then((resp) => {
             return resp.data.user
@@ -190,7 +205,7 @@ class CdEnv {
         })
     }
     deleteToken(id) {
-        return axios.post(`${server}/users/delkey`, { key_id: id }, {
+        return axios.post(`${this.server}/users/delkey`, { key_id: id }, {
             headers: { 'authorization': `Bearer ${this.token}` }
         }
         ).then((resp) => {
@@ -203,7 +218,7 @@ class CdEnv {
         if (env_id == "" || key_name == "" || value == "") {
             return false
         } else {
-            return axios.post(`${server}/env/addKey`, { env: { env_id, key_name, value } }, {
+            return axios.post(`${this.server}/env/addKey`, { env: { env_id, key_name, value } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 return resp.data.env
@@ -216,7 +231,7 @@ class CdEnv {
         if (env_id == "" || key_id == "" || key_name == "" || value == "") {
             return false
         } else {
-            return axios.put(`${server}/env/updateKey`, { env: { env_id, key_id, key_name, value } }, {
+            return axios.put(`${this.server}/env/updateKey`, { env: { env_id, key_id, key_name, value } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 return resp.data.env
@@ -229,7 +244,7 @@ class CdEnv {
         if (env_id == "" || key_id == "") {
             return false
         } else {
-            return axios.post(`${server}/env/deleteKey`, { env: { env_id, key_id } }, {
+            return axios.post(`${this.server}/env/deleteKey`, { env: { env_id, key_id } }, {
                 headers: { 'authorization': `Bearer ${this.token}` }
             }).then((resp) => {
                 return resp.data.env
