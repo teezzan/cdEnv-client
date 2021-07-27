@@ -1,8 +1,10 @@
 # cdEnv-client
+![Logo](https://github.com/teezzan/cdEnv/blob/master/images/cdenv-logo.png)
 
-[cdEnv](https://github.com/teezzan/cdEnv) is a self-hostable and secured system for storing keys and variables for different environments and projects. It allows easy access via HTTP API and CLI.
+>[cdEnv](https://github.com/teezzan/cdEnv) is a self-hostable and secured system for storing keys and variables for different environments and projects. It allows easy access via HTTP API and CLI.
 
 **This is a client to access any hosted [cdEnv](https://github.com/teezzan/cdEnv) instance in your code and via the CLI.**
+
 
 
 ## Screenshots/Demo
