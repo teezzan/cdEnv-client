@@ -1,22 +1,23 @@
 let axios = require('axios');
 let fs = require('fs');
-let server = 'http://cdenv.herokuapp.com/api';
-var term = require('terminal-kit').terminal;
 
 
 let userdetails = {};
 try {
     userdetails = require('../.data');
-} catch{
+} catch {
     userdetails.token = '';
 }
 
 class CdEnv {
     token = "";
     env = {};
-
-    constructor() {
+    server = process.env.CDENV_SERVER + "/api";
+    constructor(server) {
         this.token = userdetails.token;
+        if (server) {
+            this.server = server+ "/api";
+        }
     }
     ready() {
         return new Promise((resolve, reject) => {
@@ -53,7 +54,7 @@ class CdEnv {
                         process.env[x.key_name] = x.value
                     });
                     return keys
-                } catch{
+                } catch {
                     return { error: "Check Internet Connection" }
                 }
 
