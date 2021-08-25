@@ -59,7 +59,7 @@ class CdEnv {
             console.log('error')
             throw new Error("Invalid Parameters");
         }
-        axios.post(`${this.server}/env/env`, {
+        axios.post(`${out_server}/api/env/env`, {
             env_name: env_name,
             api_key
         }
