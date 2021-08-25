@@ -75,7 +75,7 @@ class CdEnv {
             }
 
         }).catch((err) => {
-            console.log("Check Your Network Connection and Be sure You are Logged in.");
+            console.log("Check Your Network Connection.");
         })
 
     }
