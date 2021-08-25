@@ -39,7 +39,7 @@ class CdEnv {
             }
         })
     }
-    fetch(api_key, env_name, server = null) {
+    async fetch(api_key, env_name, server = null) {
         let out_server;
         if (server !== null) {
             out_server = server;
@@ -59,24 +59,22 @@ class CdEnv {
             console.log('error')
             throw new Error("Invalid Parameters");
         }
-        axios.post(`${out_server}/api/env/env`, {
-            env_name: env_name,
-            api_key
+        try {
+            let resp = await axios.post(`${out_server}/api/env/env`, {
+                env_name: env_name,
+                api_key
+            });
+            let keys = resp.data.env.keys;
+            keys.forEach(x => {
+                process.env[x.key_name] = x.value
+            });
+            return keys
         }
-        ).then((resp) => {
-            try {
-                let keys = resp.data.env.keys;
-                keys.forEach(x => {
-                    process.env[x.key_name] = x.value
-                });
-                return keys
-            } catch {
-                return { error: "Check Internet Connection" }
-            }
+        catch (err) {
+            console.log(err);
+            return { error: "Check Internet Connection" }
+        }
 
-        }).catch((err) => {
-            console.log("Check Your Network Connection.");
-        })
 
     }
     register(email, password, username) {
